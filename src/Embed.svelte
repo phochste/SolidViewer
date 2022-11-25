@@ -33,7 +33,7 @@
 
     function loadFromUrl(url) {
         console.log(`loading from url: ${url}`);
-        const r = getParameter(url,'rft.resource');
+        const r = getParameter(url,'resource');
         if (r) {
             resource = r;
             loadData(resource);
@@ -57,7 +57,7 @@
 
                 const newUrl = 
                     window.location.href.replaceAll(/\?.*/g,'') +
-                    '?rft.resource=' + encodeURIComponent(resource);
+                    '?resource=' + encodeURIComponent(resource);
 
                 window.history.pushState({},undefined,newUrl);
             }

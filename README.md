@@ -1,13 +1,9 @@
-# AcmeBase
+# SolidViewer
 
-A base implementation of a Solid App with login using svelte
+A base implementation to view files stored in a Solid pod with authorized access. 
 
 # Usage
 
-```
-npx degit phochste/AcmeBase my-solid-app
+<img src=https://phochste.github.io/SolidViewer/images/demo.png>
 
-cd my-svelte-project
-npm install
-npm run dev
-```
+{BASE_URL_OF_APP}?resource={URL_YOU_WANT_TO_VIEW}
