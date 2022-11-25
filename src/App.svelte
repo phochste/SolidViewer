@@ -5,6 +5,14 @@
 
 	export let name: string;
 	let profile: any;
+	let isPrivate: boolean;
+
+	$: if (isPrivate) {
+		document.body.classList.add('private');
+	}
+	else {
+		document.body.classList.remove('private');
+	}
 </script>
 
 <nav class="navbar navbar-default">
@@ -21,4 +29,16 @@
 </nav>
 
 <Login bind:profile={profile}/>
-<Embed/>
+<Embed bind:isPrivate={isPrivate}/>
+
+{#if isPrivate} 
+	<style type="text/css">
+		.navbar {
+			background-color: #343261;
+		}
+
+		.navbar-brand {
+			color: #ffffff !important;
+		}
+	</style>
+{/if}

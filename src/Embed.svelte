@@ -2,6 +2,8 @@
     import { solidDatasetAsMarkdown } from '@inrupt/solid-client';
     import * as Solid from '@inrupt/solid-client-authn-browser'; 
 
+    export let isPrivate : boolean = false;
+
     let resource: string;
     let dataUrl : string;
     let dataType : string;
@@ -40,6 +42,34 @@
         }
     } 
 
+    async function isWorldReadable(resource: string) {
+        console.log(`checking is private: ${resource}`);
+        try {
+            const response = await fetch(resource, {
+                method: 'HEAD'
+            });
+
+            if (response.ok) {
+                console.log('nope');
+                return true;
+            }
+            else if (response.status === 401) {
+                console.log('oh yeah');
+                return false;
+            }
+            else {
+                console.log(`maybe or maybe not: got a ${response.status}`);
+                // we don't know what happened ..assume true unless proven false
+                return true
+            }
+        }
+        catch (e) {
+            console.log(`maybe or maybe not: got an error`);
+            // we don't know what happened ..assume true unless proven false
+            return true;
+        }
+    }
+
     async function loadData(resource: string) {
         console.log(`fetching ${resource}...`);
 
@@ -74,6 +104,15 @@
             error = `Failed to fetch`;
             errorDescription = "Probably this is not a Solid resource?";
         }
+
+        if (! await isWorldReadable(resource)) {
+            console.log(`isPrivate: true`);
+            isPrivate = true;
+        }
+        else {
+            console.log(`isPrivate: false`);
+            isPrivate = false;
+        }
     }
 </script>
 <svelte:head>
@@ -99,11 +138,31 @@
 <iframe id="iframe1" width='100%' height='100%' src={dataUrl}></iframe>
 {/if}
 
+{#if isPrivate}
 <style type="text/css">
+    h2 {
+        color: #C0C0F1;
+    }
+
+    p {
+        color: #C0C0F1;
+    }
+
     #iframe1 {
+        background-color: #C0C0F1;
         left: 0px;
         width: 100%;
         top: 65px;
         height: 100%;
     }
 </style>
+{:else}
+    <style type="text/css">
+        #iframe1 {
+            left: 0px;
+            width: 100%;
+            top: 65px;
+            height: 100%;
+        }
+    </style>
+{/if}
