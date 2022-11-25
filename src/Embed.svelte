@@ -77,7 +77,11 @@
     }
 </script>
 <svelte:head>
-    <title>Solid Viewer - {resource}</title>
+    {#if resource}
+        <title>Acme Viewer - {resource}</title>
+    {:else}
+        <title>Acme Viewer</title>
+    {/if}
 </svelte:head>
 
 <img src="images/reload.png"
