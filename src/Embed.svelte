@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { solidDatasetAsMarkdown } from '@inrupt/solid-client';
     import * as Solid from '@inrupt/solid-client-authn-browser'; 
+    import { blob2string, embedder, string2blob } from './embedder';
 
     export let isPrivate : boolean = false;
 
+    let appUrl = window.location.href.replaceAll(/\?.*/g,'');
     let resource: string;
     let dataUrl : string;
     let dataType : string;
@@ -50,21 +51,21 @@
             });
 
             if (response.ok) {
-                console.log('nope');
+                console.log('...nope');
                 return true;
             }
             else if (response.status === 401) {
-                console.log('oh yeah');
+                console.log('...oh yeah');
                 return false;
             }
             else {
-                console.log(`maybe or maybe not: got a ${response.status}`);
+                console.log(`...maybe or maybe not: got a ${response.status}`);
                 // we don't know what happened ..assume true unless proven false
                 return true
             }
         }
         catch (e) {
-            console.log(`maybe or maybe not: got an error`);
+            console.log(`...maybe or maybe not: got an error`);
             // we don't know what happened ..assume true unless proven false
             return true;
         }
@@ -76,12 +77,27 @@
         try {
             const response = await Solid.fetch(resource); 
 
+            dataType = response.headers.get('Content-Type');
+
             if (response.ok) {
-                const blob = await response.blob();
-                dataUrl = URL.createObjectURL(blob);
-                dataType = response.headers.get('Content-Type');
+                
+                if (dataType.startsWith('text/html')) {
+                    console.log('start embedding html...');
+                    const blob = await response.blob();
+                    const htmlStr = await blob2string(blob);
+                    const embedStr = await embedder(htmlStr,appUrl,resource);
+                    dataUrl = URL.createObjectURL(string2blob(embedStr));
+                    console.log(embedStr);
+                    console.log('...done embedding html');
+                }
+                else {
+                    const blob = await response.blob();
+                    dataUrl = URL.createObjectURL(blob); 
+                }
+
                 console.log(dataType);
                 console.log(dataUrl);
+
                 error = null;
                 errorDescription = null;
 

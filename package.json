@@ -31,6 +31,7 @@
     "@inrupt/vocab-common-rdf": "^1.0.5",
     "buffer": "^6.0.3",
     "dotenv-webpack": "^7.0.3",
-    "file-loader": "^6.2.0"
+    "file-loader": "^6.2.0",
+    "htmlparser2": "^8.0.1"
   }
 }
